@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CV Boiler Analysis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        .stats-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #666;
+        }
+        .postal-code {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <h1>CV Boiler Analysis Report</h1>
+    
+    <div class="stats-container">
+        <h2>Key Statistics</h2>
+        <div class="stat-item">
+            <strong>Total CV Boilers:</strong> {{ stats.total_cv_boilers }}
+        </div>
+        <div class="stat-item">
+            <strong>Average Boilers per Postal Code:</strong> {{ "%.2f"|format(stats.avg_boilers_per_postal) }}
+        </div>
+        <div class="stat-item">
+            <strong>Median Boilers per Postal Code:</strong> {{ "%.2f"|format(stats.median_boilers_per_postal) }}
+        </div>
+        <div class="stat-item">
+            <strong>Total Postal Codes:</strong> {{ stats.total_postal_codes }}
+        </div>
+        <div class="stat-item">
+            <strong>Individual Boilers:</strong> {{ stats.individual_boilers }}
+        </div>
+        <div class="stat-item">
+            <strong>Estimated Cost:</strong> €{{ stats.estimated_cost }}
+        </div>
+    </div>
+
+    <h2>Top 10 Postal Codes by Boiler Count</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Postal Code</th>
+                <th>Number of Boilers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in top_10_postal %}
+            <tr>
+                <td class="postal-code">{{ item['Opstel Postcode'] }}</td>
+                <td>{{ item.cv_boiler_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Boiler Distribution</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Number of Boilers</th>
+                <th>Number of Postal Codes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for count, postal_count in distribution.items() %}
+            <tr>
+                <td>{{ count }}</td>
+                <td>{{ postal_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Generated on {{ timestamp }}</p>
+    </div>
+</body>
+</html> 

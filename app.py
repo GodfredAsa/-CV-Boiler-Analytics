@@ -43,11 +43,64 @@ def analyze_data(df):
     
     # Prepare distribution data for histogram
     distribution = cv_by_postal['cv_boiler_count'].value_counts().sort_index().to_dict()
+
+    # Manufacturer distribution
+    manufacturer_dist = cv_boilers['TOESTEL FABRIKANT'].value_counts().to_dict()
+    # Boiler type distribution
+    type_dist = cv_boilers['Toestel type'].value_counts().to_dict()
+
+    # Cluster Analysis by Postal Code (first 2 digits as region)
+    # Ensure 'Opstel Postcode' is treated as string to avoid errors with mixed types
+    cv_boilers_cleaned_region = cv_boilers.copy()
+    cv_boilers_cleaned_region['RegionCode'] = cv_boilers_cleaned_region['Opstel Postcode'].astype(str).str.replace(r'\s.*$', '', regex=True).str[:2]
+    cv_boilers_cleaned_region = cv_boilers_cleaned_region[cv_boilers_cleaned_region['RegionCode'].str.len() == 2] # Filter for valid 2-digit regions
+    region_dist_df = cv_boilers_cleaned_region.groupby('RegionCode').size().reset_index(name='boiler_count')
+    region_dist_df = region_dist_df.sort_values('boiler_count', ascending=False)
+    region_dist = region_dist_df.to_dict('records')
+
+    # Manufacturer Market Share by Region (for Stacked Bar Chart)
+    # Ensure 'Opstel Postcode' is treated as string and truncated to 2 digits for region grouping
+    cv_boilers_cleaned_ms = cv_boilers.copy()
+    cv_boilers_cleaned_ms['RegionCode'] = cv_boilers_cleaned_ms['Opstel Postcode'].astype(str).str.replace(r'\s.*$', '', regex=True).str[:2]
+    cv_boilers_cleaned_ms = cv_boilers_cleaned_ms[cv_boilers_cleaned_ms['RegionCode'].str.len() == 2] # Filter for valid 2-digit regions
+
+    # Group by region and manufacturer, then count
+    market_share_raw = cv_boilers_cleaned_ms.groupby(['RegionCode', 'TOESTEL FABRIKANT']).size().unstack(fill_value=0)
+
+    # Calculate percentage market share within each region
+    market_share_percent = market_share_raw.apply(lambda x: x / x.sum(), axis=1).round(4) * 100 # Convert to percentage
+
+    # Convert to a format suitable for Chart.js
+    market_share_labels = market_share_percent.index.tolist()
+    market_share_manufacturers = market_share_percent.columns.tolist()
+    market_share_datasets = []
+
+    # Generate a list of distinct colors for manufacturers
+    colors = [
+        '#42A5F5', '#66BB6A', '#FFCA28', '#EF5350', '#AB47BC', '#26C6DA', '#FFEE58', '#EC407A',
+        '#7E57C2', '#8D6E63', '#BDBDBD', '#78909C', '#4FC3F7', '#81C784', '#FFD54F', '#E57373'
+    ]
+    color_index = 0
+
+    for manufacturer in market_share_manufacturers:
+        market_share_datasets.append({
+            'label': manufacturer,
+            'data': market_share_percent[manufacturer].tolist(),
+            'backgroundColor': colors[color_index % len(colors)],
+        })
+        color_index += 1
     
     return {
         'stats': stats,
         'top_10_postal': top_10_data,
-        'distribution': distribution
+        'distribution': distribution,
+        'manufacturer_dist': manufacturer_dist,
+        'type_dist': type_dist,
+        'region_dist': region_dist,
+        'market_share_data': {
+            'labels': market_share_labels,
+            'datasets': market_share_datasets
+        }
     }
 
 def generate_pdf(analysis_results):
@@ -61,6 +114,11 @@ def generate_pdf(analysis_results):
                                  stats=analysis_results['stats'],
                                  top_10_postal=analysis_results['top_10_postal'],
                                  distribution=analysis_results['distribution'],
+                                 manufacturer_dist=analysis_results['manufacturer_dist'],
+                                 type_dist=analysis_results['type_dist'],
+                                 region_dist=analysis_results['region_dist'],
+                                 market_share_data_labels=analysis_results['market_share_data']['labels'],
+                                 market_share_data_datasets=analysis_results['market_share_data']['datasets'],
                                  timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     
     # Generate PDF from HTML

@@ -1,0 +1,10 @@
+Date/Day          Start Time          End Time       Productive hours  Description
+13-06/Fri          12:00               17:00          5hours           Understanding task
+14-06/Sat          8:00                16:00          7hours           Design phase
+16-06/Mon          8:00                16:00          7hours           Preliminary studies
+17-06/Tues         8:00                16:00          7hours           Preliminary studies
+18-06/Wednes       10:00               16:00          6hours           Server & UI design
+19-06/Thurs        8:30                18:00          10hrs 30mins     Build, Integration, Testing 
+20-06/Fri          8:00                16:00          7hours           Testing and Demo 
+
+Need to get at least 10hours more in addition 

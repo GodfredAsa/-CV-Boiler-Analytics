@@ -1,0 +1,35 @@
+Enoch,
+
+Could you please give attention to the question that is still open regarding the attached Excel file?
+
+Based on the data, what can we determine about the distribution of central heating (CV) boilers within a single postal code?
+How many CV boilers are “individual” within a postal code and thus each require a separate Gateway?
+
+The goal of this analysis is to be able to make a statement about how many CV boilers can share a single Gateway, and what the associated costs are for the purchase and installation of the Gateways.
+
+Is it commercially feasible to place a Gateway for individual CV boilers as well, and amortize these costs within the entire proposition?
+
+In CHAT, the following option was also proposed based on the Excel file.
+Please review whether this is relevant and feasible to include in the above question:
+
+Coverage analysis per postal code area using RF simulation (e.g., RadioPlanner, LoRaSim)
+
+Max. distance sensor → gateway < 1 km in urban areas, < 3 km in suburban (line-of-sight)
+
+LoRa packet loss uplink < 1% per sensor per 24 hours
+
+Min. RSSI value for acceptance > – 120 dBm
+
+Min. SNR for acceptance > – 10 dB
+
+Calculate Link Budget + RF estimation per cluster (based on gateway height and obstacles)
+
+Please do not delay this any further.
+If Aleksandr is unable to follow up on this, indicate so and assign another candidate.
+I’ve already asked several times if Alexis can take this on.
+I also forwarded the CV of a friend of Alvaro — perhaps he can do it.
+
+In any case, this can no longer wait!
+
+Regards,
+Reinder

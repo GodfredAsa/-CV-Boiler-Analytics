@@ -29,8 +29,36 @@ The system expects Excel files with the following columns:
 
 ## Prerequisites
 
+### Using Docker (Recommended)
 - Docker
 - Docker Compose
+
+### Manual Setup
+- Python 3.9 or higher
+- pip (Python package manager)
+- Homebrew (for macOS users)
+
+#### System Dependencies (Manual Setup)
+
+##### macOS
+```bash
+# Install Homebrew if not already installed
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install required system dependencies
+brew install pango
+```
+
+##### Ubuntu/Debian
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+    python3-cffi \
+    python3-brotli \
+    libpango-1.0-0 \
+    libharfbuzz0b \
+    libpangoft2-1.0-0
+```
 
 ## Setup and Running
 
@@ -51,6 +79,7 @@ docker-compose up --build
    - Open your web browser and navigate to `http://localhost:5000`
    - Upload your Excel file through the web interface
    - View the generated analytics and visualizations
+   - Download the analysis as a PDF report
 
 ### Manual Setup (Alternative)
 
@@ -78,6 +107,7 @@ python app.py
 - Automatic analysis of boiler distribution by postal code
 - Statistical insights and visualizations
 - Interactive dashboard interface
+- Download analysis results as PDF reports
 
 ## Stopping the Application
 
@@ -95,3 +125,4 @@ Press `Ctrl+C` in the terminal where the application is running.
 - Only Excel (.xlsx) files are supported
 - Uploaded files are automatically processed and removed after analysis
 - The application runs in production mode when using Docker
+- PDF generation requires system-level dependencies (automatically handled in Docker)

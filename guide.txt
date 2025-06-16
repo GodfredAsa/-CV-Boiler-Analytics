@@ -93,3 +93,43 @@ Total Individual CV Boilers: 6,050 (from the data analysis)
 Cost per Gateway (including installation): €800 (assumed based on your project context)
 Total Cost: 6,050 × €800 = €4,840,000
 This calculation assumes that each individual CV boiler (those in postal codes with only 1 boiler) requires its own Gateway. The cost per boiler is simply the total cost divided by the number of individual boilers.
+
+
+================================
+1. Boiler Manufacturer Distribution
+Why:
+Quickly shows which brands dominate your dataset.
+Useful for supplier negotiations, marketing, and understanding market share.
+2. Boiler Type Analysis (Toestel type and/or Type prod)
+Why:
+Reveals the most common types of boilers (e.g., combi vs. solo).
+Helps target product offerings, maintenance, and upgrades.
+3. Boiler Model Popularity (TOESTEL)
+Why:
+Identifies the most and least common models.
+Useful for inventory, spare parts planning, and targeted campaigns.
+4. Manufacturer Market Share by Region (cross OESTEL FABRIKANT with Opstel Postcode)
+Why:
+Shows which brands are strong in which regions.
+Enables region-specific marketing or support strategies.
+5. Cluster Analysis by Postal Code (e.g., by first 2 digits)
+Why:
+Groups boilers by region for operational planning.
+Helps identify high-density areas for service or sales focus.
+6. Outlier/Anomaly Detection (postal codes with very high/low counts)
+Why:
+Flags unusual areas (e.g., large apartment blocks, industrial sites, or data errors).
+Useful for data quality checks and special-case handling.
+7. Correlation Analysis (e.g., does a certain manufacturer dominate in certain regions?)
+Why:
+Uncovers hidden patterns (e.g., regional brand preferences).
+Supports strategic decisions and deeper market understanding.
+8. Geospatial Visualization (at postal code level)
+Why:
+Makes all the above insights visually accessible.
+Great for presentations, planning, and spotting geographic trends.
+Recommendation:
+Start with the first four—they are the most directly actionable for business, operations, and reporting.
+If you want to go further, add cluster, outlier, and correlation analyses.
+Geospatial visualization is a powerful add-on if you want to present your findings visually.
+If you want code or dashboard integration for any of these, just tell me which ones to start with!

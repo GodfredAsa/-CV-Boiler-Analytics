@@ -38,6 +38,10 @@
             height: 300px;
             width: 100%;
         }
+        .container { max-width: 1200px; margin: 40px auto; }
+        .upload-section { text-align: center; margin-bottom: 40px; }
+        .results-section { display: none; }
+        .download-btn { margin-top: 20px; }
     </style>
 </head>
 <body class="bg-light">
@@ -131,6 +135,56 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Boiler Manufacturer Distribution</h5>
+                            <div class="chart-container">
+                                <canvas id="manufacturerDonut"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Boiler Type Analysis</h5>
+                            <div class="chart-container">
+                                <canvas id="typeDonut"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Boiler Count by Region (Postal Code Prefix)</h5>
+                            <div class="chart-container">
+                                <canvas id="regionBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Manufacturer Market Share by Region (Postal Code Prefix)</h5>
+                            <div class="chart-container">
+                                <canvas id="marketShareChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center download-btn">
+                <button id="downloadPdf" class="btn btn-success">Download PDF Report</button>
             </div>
         </div>
     </div>
@@ -283,7 +337,139 @@
                 }
             });
 
+            // Create manufacturer donut chart
+            const manufacturerCtx = document.getElementById('manufacturerDonut').getContext('2d');
+            new Chart(manufacturerCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data.manufacturer_dist),
+                    datasets: [{
+                        data: Object.values(data.manufacturer_dist),
+                        backgroundColor: [
+                            '#1976D2', '#388E3C', '#FBC02D', '#D32F2F', '#7B1FA2', '#0288D1', '#C2185B', '#FFA000', '#388E3C', '#F57C00', '#455A64', '#0288D1', '#C2185B', '#FFA000', '#388E3C', '#F57C00', '#455A64'
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Create type donut chart
+            const typeCtx = document.getElementById('typeDonut').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data.type_dist),
+                    datasets: [{
+                        data: Object.values(data.type_dist),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED',
+                            '#63FF84', '#A2EB36', '#CE56FF', '#C0C04B', '#66FF99', '#9F40FF', '#E9ED63'
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Create Region Bar Chart (Cluster Analysis)
+            const regionCtx = document.getElementById('regionBarChart').getContext('2d');
+            new Chart(regionCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.region_dist.map(item => item.RegionCode),
+                    datasets: [{
+                        label: 'Number of Boilers',
+                        data: data.region_dist.map(item => item.boiler_count),
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Boilers'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Region (First 2 Digits of Postal Code)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Create Manufacturer Market Share by Region Stacked Bar Chart
+            const marketShareCtx = document.getElementById('marketShareChart').getContext('2d');
+            new Chart(marketShareCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.market_share_data.labels,
+                    datasets: data.market_share_data.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Percentage Share (%)'
+                            },
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
             results.style.display = 'block';
+
+            // Store PDF path for download
+            document.getElementById('downloadPdf').onclick = () => {
+                window.location.href = `/download-pdf/${data.pdf_path}`;
+            };
         }
     </script>
 </body>

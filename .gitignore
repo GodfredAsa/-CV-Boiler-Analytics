@@ -8,4 +8,6 @@
 *.xlsb
 *.xlsm
 *.xlsb
+*.png
 /venv
+*.pdf
